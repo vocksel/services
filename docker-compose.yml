@@ -16,8 +16,6 @@ services:
     container_name: website
     image: vocksel/vocksel.com:main
     restart: unless-stopped
-    ports:
-      - "8080:3000"
     networks:
       - cloudflare-tunnel
       - logging
@@ -30,8 +28,6 @@ services:
     container_name: swatch
     image: vocksel/swatch:main
     restart: unless-stopped
-    ports:
-      - "8100:8080"
     networks:
       - cloudflare-tunnel
       - logging
@@ -43,8 +39,6 @@ services:
   loki:
     container_name: loki
     image: grafana/loki:2.9.4
-    ports:
-      - "3100:3100"
     volumes:
       - ./config/loki.yml:/etc/loki-config.yml
       - loki_data:/loki
@@ -73,8 +67,6 @@ services:
     volumes:
       - ./config/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yaml
       - grafana_data:/var/lib/grafana
-    ports:
-      - "3000:3000"
     networks:
       - cloudflare-tunnel
       - logging

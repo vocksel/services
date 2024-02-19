@@ -1,14 +1,11 @@
 version: "3"
 
 volumes:
-  caddy_data:
-  caddy_config:
-  caddy_logs:
-  loki_data:
-  grafana_data:
-
+  loki_data: {}
+  grafana_data: {}
 
 networks:
+  cloudflare-tunnel: {}
   logging:
     name: logging
 
@@ -20,6 +17,7 @@ services:
     ports:
       - "8080:3000"
     networks:
+      - cloudflare-tunnel
       - logging
     logging:
       driver: "loki"
@@ -33,26 +31,7 @@ services:
     ports:
       - "8100:8080"
     networks:
-      - logging
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://localhost:3100/loki/api/v1/push"
-
-  caddy:
-    container_name: caddy
-    image: caddy:2
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-      - caddy_logs:/var/log/caddy
-    networks:
+      - cloudflare-tunnel
       - logging
     logging:
       driver: "loki"
@@ -95,4 +74,14 @@ services:
     ports:
       - "3000:3000"
     networks:
+      - cloudflare-tunnel
       - logging
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - cloudflare-tunnel

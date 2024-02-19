@@ -6,7 +6,8 @@ volumes:
   cloudflared_logs: {}
 
 networks:
-  cloudflare-tunnel: {}
+  cloudflare-tunnel:
+    external: true
   logging:
     name: logging
 

@@ -3,6 +3,7 @@ version: "3"
 volumes:
   loki_data: {}
   grafana_data: {}
+  cloudflared_logs: {}
 
 networks:
   cloudflare-tunnel: {}
@@ -57,7 +58,7 @@ services:
       - ./config/promtail.yml:/etc/promtail/config.yaml
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - caddy_logs:/var/log/caddy:ro
+      - cloudflared_logs:/var/log/cloudflared:ro
     command: -config.file=/etc/promtail/config.yml
     networks:
       - logging
@@ -83,5 +84,13 @@ services:
     command: tunnel run
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+      - TUNNEL_LOGFILE=/var/log/cloudflared
     networks:
       - cloudflare-tunnel
+      - logging
+    volumes:
+      - cloudflared_logs:/var/log/cloudflared
+    logging:
+      driver: "loki"
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"

@@ -7,7 +7,7 @@ All services for [vocksel.com](https://vocksel.com).
 Login to the droplet and pull latest changes
 
 ```sh
-ssh me@vocksel.com
+ssh me@64.23.137.135
 cd vocksel.com
 git pull origin main
 sudo docker pull

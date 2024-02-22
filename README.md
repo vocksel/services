@@ -8,7 +8,7 @@ Login to the droplet and pull latest changes
 
 ```sh
 ssh me@64.23.137.135
-cd vocksel.com
+cd services
 git pull origin main
 sudo docker pull
 ```

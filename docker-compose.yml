@@ -40,6 +40,24 @@ services:
       options:
         loki-url: "http://localhost:3100/loki/api/v1/push"
 
+  quiz-service:
+    container_name: quiz-service
+    image: vocksel/quiz-service:main
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=warning
+      - BACKEND_ACCESS_TOKEN=${QUIZ_SERVICE_ACCESS_TOKEN}
+      - DATABASE_URL=${QUIZ_SERVICE_DATABASE_URL}
+    ports:
+      - "4000:3000"
+    networks:
+      - cloudflare-tunnel
+      - logging
+    logging:
+      driver: "loki"
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+
   loki:
     container_name: loki
     image: grafana/loki:2.9.4

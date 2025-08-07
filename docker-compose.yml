@@ -46,6 +46,8 @@ services:
     restart: unless-stopped
     environment:
       - LOG_LEVEL=warning
+      - BACKEND_ACCESS_TOKEN=${QUIZ_SERVICE_ACCESS_TOKEN}
+      - DATABASE_URL=${QUIZ_SERVICE_DATABASE_URL}
     ports:
       - "3000:3000"
     networks:
